@@ -29,7 +29,10 @@ class Client:
 
 # Databases
 
-    def query_database(self, database_id: str):
+    def query_database(self, database_id: str = None) -> list():
+        if not database_id:
+            return []
+
         success, records = self.remote.get_records(database_id)
         if success:
             pages = [Page(r) for r in records]
@@ -51,20 +54,29 @@ class Client:
 # Pages
 
     # TODO retreave a page
-    def get_page(self, page_id):
+    def get_page(self, page_id: str = None) -> Page:
+        if not page_id:
+            return None
         success, record = self.remote.get_page(page_id)
         if success:
             return Page(record)
 
-    def create_page(self, page):
+    def create_page(self, parent: str = None) -> Page:
+        if not parent:
+            return None
+
         success, record = self.remote.create_page({
             'parent': page, 'properties': []
         })
 
         if success:
             return Page(record)
+        return None
 
-    def update_page(self, page: Page):
+    def update_page(self, page: Page = None) -> bool():
+        if not page:
+            return None
+
         success, records = self.remote.update_page(page.id, page.json())
         return success
 

@@ -14,7 +14,7 @@ class Database:
         for k, v in notion_properties.items():
             self.columns.append(Column(v))
 
-    def new_page(self):
+    def new_page_parent(self):
         return {
             'type': 'database_id',
             'database_id': self.id,
@@ -52,6 +52,7 @@ title: {self.title}
 description: {self.description}
 columns:'''
 
+
 class Column:
     def __init__(self, notino_data):
         self.id = notino_data['id']
@@ -76,7 +77,7 @@ class Column:
         else:
             return "Any"
 
-    def get_option_id(self, name):
+    def get_option_id(self, option_name: str) -> str():
         if self.type in ['status', 'select', 'multi_select']:
             for o in self.options:
                 if o['name'] == name:

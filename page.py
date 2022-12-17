@@ -90,13 +90,12 @@ class Page():
             else:
                 print(p['type'])
 
-    def get_prop(self, key: str = None):
-        # FIXME when return none in some case I use get_prop('').some and lauch error
-        if not key:
+    def get_prop(self, name: str = None) -> Propertie:
+        if not name:
             return None
 
         for p in self.properties:
-            if p.id == key or p.title == key:
+            if p.id == name or p.title == name:
                 return p
         return None
 
@@ -195,20 +194,20 @@ class Select(Propertie):
     def __init__(self, name, data):
         super().__init__(name, data)
         if data[self.type]:
-            self.value = data[self.type]['name']
-            self.value_id = data[self.type]['id']
+            self.option = data[self.type]['name']
+            self.option_id = data[self.type]['id']
         else:
-            self.value = None
-            self.value_id = None
+            self.option = None
+            self.option_id = None
 
     def update(self, data):
-        self.value = data['name']
-        self.value_id = data['id']
+        self.option = data['name']
+        self.option_id = data['id']
 
     def json(self):
-        if not self.value_id:
+        if not self.option_id:
             return False, self.id, {}
-        return True, self.id, {self.type: {'name': self.value, 'id': self.value_id}}
+        return True, self.id, {self.type: {'name': self.option, 'id': self.option_id}}
 
     def __str__(self):
         return super().__str__() + f': {self.value},'
@@ -218,41 +217,41 @@ class MultiSelect(Propertie):
     def __init__(self, name, data):
         super().__init__(name, data)
         if data[self.type]:
-            self.values = list()
+            self.options = list()
             for e in data[self.type]:
-                self.values.append({"name": e['name'], "id": e['id']})
+                self.options.append({"name": e['name'], "id": e['id']})
         else:
-            self.values = []
+            self.options = []
 
-    def have_value(self, key):
-        for v in self.values:
+    def have_option(self, option_id) -> bool():
+        for v in self.options:
             if v['id'] == key:
                 return True
         return False
 
     def update(self, data):
-        self.values = data
+        self.options = data
 
     def json(self):
-        return True, self.id, {self.type: self.values}
+        return True, self.id, {self.type: self.options}
 
     def __str__(self):
-        return super().__str__() + f': {[v["name"] for v in self.values]},'
+        return super().__str__() + f': {[v["name"] for v in self.options]},'
 
 
 class Number(Propertie):
     def __init__(self, name, data):
         super().__init__(name, data)
-        self.value = data[self.type]
+        self.number = data[self.type]
 
     def update(self, data):
-        self.value = data['number']
+        self.number = data['number']
 
     def json(self):
-        return True, self.id, {self.type: self.value}
+        return True, self.id, {self.type: self.number}
 
     def __str__(self):
-        return super().__str__() + f': {self.value},'
+        return super().__str__() + f': {self.number},'
 
 
 class Title(Propertie):
@@ -303,18 +302,18 @@ class Checkbox(Propertie):
 class Status(Propertie):
     def __init__(self, name, data):
         super().__init__(name, data)
-        self.value = data[self.type]['name']
-        self.value_id = data[self.type]['id']
+        self.option = data[self.type]['name']
+        self.option_id = data[self.type]['id']
 
     def update(self, data):
-        self.value = data['name']
-        self.value_id = data['id']
+        self.option = data['name']
+        self.option_id = data['id']
 
     def json(self):
-        return True, self.id, {self.type: {'name': self.value, 'id': self.value_id}}
+        return True, self.id, {self.type: {'name': self.option, 'id': self.option_id}}
 
     def __str__(self):
-        return super().__str__() + f': {self.value},'
+        return super().__str__() + f': {self.option},'
 
 
 class Url(Propertie):
